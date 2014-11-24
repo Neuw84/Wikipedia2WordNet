@@ -17,7 +17,6 @@
 
 package edu.ehu.galan.wiki2wordnet.wikipedia2wordnet.utils;
 
-import edu.ehu.galan.wiki2wordnet.wikipedia2wordnet.utils.SystemCommandExecutor;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,11 +44,11 @@ public class UKBUtils {
      * @param pFile
      * @return
      */
-    public static HashMap<String,Integer> processUKB(String pFile) {
+    public static HashMap<String,Integer> processUKB(String ukbBinDir ,String pFile) {
         List<String> command2 = new ArrayList<>();
         command2.add("/bin/sh");
         command2.add("-c");
-        command2.add("/home/angel/lidom/ukb/bin/ukb_wsd --ppr -K "+System.getProperty("user.dir")+"/resources/wn3_0relBin.txt -D "+System.getProperty("user.dir")+"/resources/wn3_0.lex " + pFile);
+        command2.add(ukbBinDir+" --ppr -K "+System.getProperty("user.dir")+"/resources/wn3_0relBin.txt -D "+System.getProperty("user.dir")+"/resources/wn3_0.lex " + pFile);
         SystemCommandExecutor commande = new SystemCommandExecutor(command2);
         HashMap<String,Integer> synsets = new HashMap<>();
         try {

@@ -159,9 +159,10 @@ public class Mapper {
      * an unique wordnet mapping (synset) in babelnet/fernando mappings
      * @param pFile - The file where the ubk will be processed in case its needed
      * @param pWordnet - A Wordnet dict using edu.mit.jwi library with WordNet 3.0
+     * @param pUkbBinDir - The dir where the ukb binaries are
      * @return - a hashmap with the wikititles / synsets pairs
      */
-    public static HashMap<String, Integer> babelnetFernandoToWordnet(HashMap<String, List<Wiki2WordnetMapping>> pBabelnetMappings, HashMap<String, Wiki2WordnetMapping> pFernandoMappings, List<String> pWikiTitles, String pFile, IDictionary pWordnet, List<String> pDesambiguationContext) {
+    public static HashMap<String, Integer> babelnetFernandoToWordnet(HashMap<String, List<Wiki2WordnetMapping>> pBabelnetMappings, HashMap<String, Wiki2WordnetMapping> pFernandoMappings, List<String> pWikiTitles, String pFile, IDictionary pWordnet, List<String> pDesambiguationContext,String pUkbBinDir) {
         HashMap<String, Integer> mappings = new HashMap<>(pWikiTitles.size());
         HashMap<String, List<Wiki2WordnetMapping>> ukbList = new HashMap<>();
         if (pBabelnetMappings != null && pFernandoMappings != null) {
@@ -228,7 +229,7 @@ public class Mapper {
             logger.error("No mappings provided");
         }
         if (!ukbList.isEmpty()) {
-            disambiguateUKB(ukbList, pDesambiguationContext, pFile, pWordnet, mappings);
+            disambiguateUKB(ukbList, pDesambiguationContext, pFile, pWordnet, mappings,pUkbBinDir);
         }
         for (String context : pDesambiguationContext) {
             mappings.remove(context);
@@ -236,7 +237,7 @@ public class Mapper {
         return mappings;
     }
 
-    private static void disambiguateUKB(HashMap<String, List<Wiki2WordnetMapping>> pUkbList, List<String> pDesambContext, String pFile, IDictionary pWordnet, HashMap<String, Integer> pMappings) {
+    private static void disambiguateUKB(HashMap<String, List<Wiki2WordnetMapping>> pUkbList, List<String> pDesambContext, String pFile, IDictionary pWordnet, HashMap<String, Integer> pMappings,String pUkbBinDir) {
         logger.debug("Desambiguating Wornet synsets via UKB method");
         HashMap<String, List<String>> toDisam = new HashMap<>();
         logger.debug("Finding gold topics for disambiguation...");
@@ -246,7 +247,7 @@ public class Mapper {
             toDisam.put(pWordnet.getSynset(new SynsetID(pMappings.get(topics21), POS.NOUN)).getWords().get(0).getLemma().toLowerCase(), context);
         }
         UKBUtils.prepareInput(toDisam, pFile);
-        HashMap<String, Integer> synsets = UKBUtils.processUKB(pFile);
+        HashMap<String, Integer> synsets = UKBUtils.processUKB(pUkbBinDir,pFile);
         if (toDisam.size() == synsets.size()) {
             for (String topics21 : pUkbList.keySet()) {
                 Integer inte = synsets.get(pWordnet.getSynset(new SynsetID(pMappings.get(topics21), POS.NOUN)).getWords().get(0).getLemma().toLowerCase());
