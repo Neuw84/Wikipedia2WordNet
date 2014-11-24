@@ -40,7 +40,7 @@ public class Example  {
         HashMap<String,Wiki2WordnetMapping> fernan=Mapper.loadFernandoMappings("resources/fernandoMappings.txt.bz2");        
         List<String> wikiTitles = new ArrayList<>(Arrays.asList("Saturn","Moon","Cosmologist"));
         List<String> desambiguationContext= Arrays.asList("Mars", "Solar System");
-        HashMap<String,Integer> maps=Mapper.babelnetFernandoToWordnet(babel,fernan , wikiTitles, "/tmp/ukb", wordnet,desambiguationContext);
+        HashMap<String,Integer> maps=Mapper.babelnetFernandoToWordnet(babel,fernan , wikiTitles, "/tmp/ukb", wordnet,desambiguationContext,"/home/ukb/ukbdir/bin");
         System.out.println(maps);
     }
 }
